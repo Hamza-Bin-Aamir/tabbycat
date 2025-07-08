@@ -1,4 +1,5 @@
 def is_staff(context):
-    # OpenAPI generation does not have a view (sometimes context is also None in that circumstance).
-    # Avoid redacting fields.
-    return context is None or 'view' not in context or not getattr(context['request'].user, 'is_anonymous', True)
+    if context is None or 'view' not in context:
+        return False
+    user = getattr(context.get('request'), 'user', None)
+    return user and hasattr(user, 'is_staff') and user.is_staff
